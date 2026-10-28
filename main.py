@@ -1,19 +1,27 @@
-import calendar
+from pyodide.http import pyfetch
+from pyscript import document, when
 
-def paivia_kuukaudessa(v, k):
-    p = 0
-    if k in [1, 3, 5, 7, 8, 10, 12]:
-        return 31
-    elif k in [4, 6, 9, 11]:
-        return 30
-    elif k == 2:
-        if calendar.isleap(v):
-            return 29
+nimet = [
+    'sisapiha',
+    'teiskontien-aula',
+    'palvelukatu',
+    'tietotalon-aula',
+    'juhlasali',
+    'kuntokadun-aula'
+]
+
+async def lue_paikat(nimet):
+    paikkalista = {}
+    for nimi in nimet:
+        response = await pyfetch(f"./KT9/{nimi}.json")
+        if response.ok:
+            paikkalista[nimi] = await response.json()
         else:
-            return 28
-    return 0
+            paikkalista[nimi] = {"virhe": f"Tiedostoa ei löytynyt: {nimi}.json"}
+    return paikkalista
 
-v = int(input('Anna vuosi: '))
-k = int(input('Anna kuukauden numero 1-12: '))
-p = paivia_kuukaudessa(v, k)
-print(p)
+@when("click", "#lataa")
+async def lataa_paikat(event):
+    data = await lue_paikat(nimet)
+    document.querySelector("#tulos").innerText = str(data)
+    
