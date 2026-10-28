@@ -1,30 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyScript JSON loader</title>
     <script type="module" src="https://pyscript.net/releases/2024.10.2/core.js"></script>
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.10.2/core.css">
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.10.2/core.css" />
   </head>
-
   <body>
-    <py-script>
-import json
-from js import fetch
+    <h1>Loading JSON files</h1>
+    <div id="output"></div>
 
-async def load_json(path):
-    response = await fetch(path)
-    if not response.ok:
-        raise Exception(f"Failed to load {path}")
-    return await response.json()
-
-async def main():
-    files = ["data/a.json", "data/b.json"]
-    results = {}
-    for f in files:
-        results[f] = await load_json(f)
-    print(results)
-
-main()
-    </py-script>
+    <py-script src="./main.py"></py-script>
   </body>
 </html>
