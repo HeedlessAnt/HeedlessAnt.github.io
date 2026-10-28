@@ -1,13 +1,30 @@
 <!DOCTYPE html>
-<html lang="fi">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
-  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
-  <title>files</title>
-</head>
-<body>
-  <script type="py" src="./main.py"></script>
-</body>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script type="module" src="https://pyscript.net/releases/2024.10.2/core.js"></script>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.10.2/core.css">
+  </head>
+
+  <body>
+    <py-script>
+import json
+from js import fetch
+
+async def load_json(path):
+    response = await fetch(path)
+    if not response.ok:
+        raise Exception(f"Failed to load {path}")
+    return await response.json()
+
+async def main():
+    files = ["data/a.json", "data/b.json"]
+    results = {}
+    for f in files:
+        results[f] = await load_json(f)
+    print(results)
+
+main()
+    </py-script>
+  </body>
 </html>
