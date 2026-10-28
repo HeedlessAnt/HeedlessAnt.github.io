@@ -5,39 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
   <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
-  <title>Kuukausipäivät</title>
+  <title>KT9 Paikat</title>
 </head>
 <body>
-  <label>Vuosi:
-    <input id="vuosi" type="number" value="2024" />
-  </label><br>
-
-  <label>Kuukausi:
-    <input id="kuukausi" type="number" min="1" max="12" value="2" />
-  </label><br>
-
-  <button id="laske">Laske</button>
-  <p id="tulos"></p>
+  <button id="lataa">Lataa paikat</button>
+  <pre id="tulos"></pre>
 
   <script type="py">
-    import calendar
+    from pyodide.http import pyfetch
     from pyscript import document, when
 
-    def paivia_kuukaudessa(v, k):
-        if k in [1, 3, 5, 7, 8, 10, 12]:
-            return 31
-        elif k in [4, 6, 9, 11]:
-            return 30
-        elif k == 2:
-            return 29 if calendar.isleap(v) else 28
-        return 0
+    nimet = ['sisapiha', 'teiskontien-aula', 'palvelukatu', 'tietotalon-aula', 'juhlasali', 'kuntokadun-aula']
 
-    @when("click", "#laske")
-    def laske(event):
-        v = int(document.querySelector("#vuosi").value)
-        k = int(document.querySelector("#kuukausi").value)
-        p = paivia_kuukaudessa(v, k)
-        document.querySelector("#tulos").innerText = f"Kuukauden päivien määrä: {p}"
+    async def lue_paikat(nimet):
+        paikkalista = {}
+        for nimi in nimet:
+            response = await pyfetch(f"./KT9/{nimi}.json")
+            if response.ok:
+                paikkalista[nimi] = await response.json()
+            else:
+                paikkalista[nimi] = {"virhe": f"Tiedostoa ei löytynyt: {nimi}.json"}
+        return paikkalista
+
+    @when("click", "#lataa")
+    async def lataa_paikat(event):
+        data = await lue_paikat(nimet)
+        document.querySelector("#tulos").innerText = str(data)
   </script>
 </body>
 </html>
