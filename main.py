@@ -13,7 +13,7 @@ nimet = [
 async def lue_paikat(nimet):
     paikkalista = {}
     for nimi in nimet:
-        response = await pyfetch(f"./KT9/{nimi}.json")
+        response = await pyfetch(f"./{nimi}.json")
         if response.ok:
             paikkalista[nimi] = await response.json()
         else:
