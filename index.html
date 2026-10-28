@@ -4,33 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script type="module" src="https://pyscript.net/releases/2026.3.1/core.js"></script>
-  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css">
-  <title>KT9 Paikat</title>
+  <link rel="stylesheet" href="https://pyscript.net/releases/2026.3.1/core.css" />
+  <title>paikat</title>
 </head>
 <body>
   <button id="lataa">Lataa paikat</button>
   <pre id="tulos"></pre>
 
-  <script type="py">
-    from pyodide.http import pyfetch
-    from pyscript import document, when
-
-    nimet = ['sisapiha', 'teiskontien-aula', 'palvelukatu', 'tietotalon-aula', 'juhlasali', 'kuntokadun-aula']
-
-    async def lue_paikat(nimet):
-        paikkalista = {}
-        for nimi in nimet:
-            response = await pyfetch(f"./KT9/{nimi}.json")
-            if response.ok:
-                paikkalista[nimi] = await response.json()
-            else:
-                paikkalista[nimi] = {"virhe": f"Tiedostoa ei löytynyt: {nimi}.json"}
-        return paikkalista
-
-    @when("click", "#lataa")
-    async def lataa_paikat(event):
-        data = await lue_paikat(nimet)
-        document.querySelector("#tulos").innerText = str(data)
-  </script>
+  <script type="py" src="./main.py"></script>
 </body>
 </html>
